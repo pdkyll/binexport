@@ -15,6 +15,42 @@
 cmake_minimum_required(VERSION 3.7)
 project(tools CXX)
 
+## Utility library for implementing sub-commands
+#add_library(binexport_command_util
+#  command_util.h
+#  command_util.cc
+#)
+#target_link_libraries(binexport_command_util PRIVATE
+#  absl::flags_parse
+#  absl::status
+#  absl::str_format
+#  binexport_base
+#)
+
+# Entry point for BinExport command-line utilities.
+add_executable(binexport binexport_main.cc
+  ../version.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../version.cc
+)
+target_link_libraries(binexport PRIVATE
+  absl::flags_parse
+  absl::status
+  absl::str_format
+  binexport_base
+  binexport_shared
+)
+install(TARGETS binexport RUNTIME DESTINATION binexport-prefix)
+
+# Dummy command that does (mostly) nothing. Used for tests.
+add_executable(binexport-dummy binexport_dummy.cc)
+target_link_libraries(binexport-dummy PRIVATE
+  absl::flags_parse
+  absl::status
+  absl::str_format
+
+  binexport_base
+)
+
 add_executable(binexport2dump binexport2dump.cc)
 target_link_libraries(binexport2dump
   absl::flat_hash_map
